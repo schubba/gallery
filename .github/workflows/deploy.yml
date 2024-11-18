@@ -1,0 +1,41 @@
+name: Deploy Hugo site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # oder der Branch, auf den du Änderungen pushst
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Install Hugo
+      - name: Set up Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.112.3'  # Du kannst die Hugo-Version nach Bedarf anpassen
+
+      # 3. Build the site
+      - name: Build Hugo site
+        run: hugo
+
+      # 4. Configure Git
+      - name: Set up Git for deployment
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      # 5. Push generated site to gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_branch: gh-pages
+          folder: public  # Der Ordner, in dem Hugo die gebauten Dateien ablegt
+          target_branch: gh-pages
+          commit_message: "Deploy Hugo site to GitHub Pages"
+
